@@ -42,6 +42,10 @@ setTimeout(function(){
     console.log(fsData);
 },5100);
 
+var stat = fs.lstatSync("./组件");
+console.log("=========");
+console.log(stat.isDirectory());
+console.log(stat.isFile());
 
 function isFile(path){
     return exists(path) && fs.statSync(path).isFile();
