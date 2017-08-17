@@ -4,16 +4,14 @@
 
 var fs = require("fs");
 var path = require('path');
+var child_process = require('child_process');
 
-var fileTree = {};
+var bat = 'e:git/node-server-test/git-log.bat';
 
 function travel(dir, callback) {
     fs.readdirSync(dir).forEach(function (file) {
         var pathname = path.join(dir, file);
         if (fs.statSync(pathname).isDirectory()) {
-            if(!fileTree[file]){
-                fileTree[file]=[];
-            }
             travel(pathname, callback);
         } else {
             if(path.extname(pathname) === ".txt"){ // 过滤掉非指定格式的文件
@@ -22,14 +20,21 @@ function travel(dir, callback) {
         }
     });
 }
+var execBat = function(url,file,log){
+    child_process.execFile(url,[file,log],{cwd:'e:/'},function (error,stdout,stderr) {
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+        else console.log('成功执行指令!');
+    });
+};
 
 travel("../组件",function(file){
-    var fileObj = path.parse(file);
-    var dirs = fileObj.dir.split(path.sep); //path.sep 平台特定的路径片段分隔符
-    var len = dirs.length;
-    if(len>0 && dirs[len-1] in fileTree){
-        fileTree[dirs[len-1]].push(fileObj.name);
-    }
+    var pa = path.relative('../', file);
+    var log = path.basename(file,".txt")+".log";
+    pa = pa.replace(/\\/g,"/");
+    execBat(bat,pa,log);
 });
 
-console.log("第一级的目录:",fileTree);
+
+
