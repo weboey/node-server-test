@@ -1,5 +1,5 @@
 echo hello
 
-cd e:/git/node-server-test
+cd f:/git/rdk
 
-git log  --all -- %1 > e:/test/%2
+git log  --all -- %1 > f:/log/test/%2
