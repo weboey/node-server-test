@@ -1,30 +1,64 @@
 /**
  * Created by 6396000843 on 2017/8/21.
  */
-
-
 var fs = require('fs');
 var path = require('path');
-
 var uedProjectPath = "F:/git/ued-resource/项目";
 
+function Project(){
+
+};
+const projectFiled={
+    prototypeImgUrl:"头图",
+    prototypeBrief:"项目简介",
+    prototypeView:"原型",
+    prototypeImgUrlList:"效果图"
+};
 var projectList=[];
 var fileTree = {};
+
 travel(uedProjectPath,function(file){
-    var project={};
     var fileObj = path.parse(file);
-
     var projectName= fileObj.name;
-
     if(!fileTree[projectName]){
-        fileTree[projectName]=[];
+        fileTree[projectName]={};
+        fileTree[projectName]["prototypeImgUrlList"]=[];
     }
-    projectList.push(project);
 },false);
 
-console.log(projectList);
-console.log(fileTree);
+travel(uedProjectPath,function(file){
+    var fileObj = path.parse(file);
+    //var dirs = fileObj.dir.split(path.sep); //path.sep 平台特定的路径片段分隔符
+    for(project in fileTree){
+        if(fileTree.hasOwnProperty(project)){
+            if(fileObj.dir.indexOf(project)!=-1){
+                fileTree[project].projectName=project;
+                for(filed in projectFiled){
+                    if(fileObj.dir.indexOf(projectFiled[filed])!=-1){
+                        if(filed=="prototypeImgUrlList"){
+                            fileTree[project]["prototypeImgUrlList"].push(file);
+                        }else{
+                            fileTree[project][filed]=file;
+                        }
+                    }
+                }
+            }
+        }
+    }
+});
+/*
+travel(uedProjectPath,function(file){
+    var fileObj = path.parse(file);
+    for(project in fileTree){
+        if(fileTree.hasOwnProperty(project)) {
+            if (fileObj.dir.indexOf(project) != -1) {
+                console.log(project);
+            }
+        }
+    }
+});*/
 
+console.log(fileTree);
 
 
 function travel(dir,callback,dep) {
@@ -32,9 +66,16 @@ function travel(dir,callback,dep) {
     fs.readdirSync(dir).forEach(function (file) {
         var pathname = path.join(dir, file);
         if(dep && fs.statSync(pathname).isDirectory()){
-            travel(pathname, callback);
+            if(file.indexOf("原型")==-1){
+                travel(pathname, callback);
+            }
         }else{
             callback(pathname);
         }
     });
 }
+
+
+
+
+

@@ -4,8 +4,14 @@
 
 export class Project {
     projectName: number;
-    name: string;
-    label: string;
-    level:number;
-    parent:number;
+    prototypeImgUrl: string;
+    prototypeBrief: string;
+    prototypeView:string;
+    prototypeZip:string;
+    creator:string;
+    creatTime:string;
+    creatorId:string;
+    updata:string;
+    updataTime:string;
+    updataId:string;
 }

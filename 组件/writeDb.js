@@ -16,9 +16,9 @@ function travel(dir, callback) {
         if (fs.statSync(pathname).isDirectory()) {
             callback(pathname);
         } else {
-           // if(path.extname(pathname) === ".txt"){ // 过滤掉非指定格式的文件
-
-          //  }
+            if(path.extname(pathname) === ".txt"){ // 过滤掉非指定格式的文件
+                callback(pathname);
+            }
         }
     });
 }
