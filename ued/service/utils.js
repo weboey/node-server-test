@@ -225,10 +225,32 @@ function execBat(batPath,file,log){
         else console.log('成功执行指令!');
     });
 }
-
+/**
+ *功能：对象继承
+ * */
+var extend=function(o,n){
+    for (var p in n){
+        if(n.hasOwnProperty(p) && (!o.hasOwnProperty(p) ))
+            o[p]=n[p];
+    }
+};
+/**
+ *功能：对象数组转换成一个二维数组
+ * */
+function _transToArrayFromObjArr(objArr){
+    var arr=[];
+    objArr.forEach(function(rowItem,index){
+        arr[index]=[];
+        for(key in rowItem){
+            arr[index].push(rowItem[key]);
+        }
+    });
+    return arr;
+}
 module.exports = {
     travel:_travel, //目录遍历
     copy:_copy, //文件复制
     copyFile:_copyFile, //文件复制 async
-    copyDir:_copyDir //文件夹复制 async
+    copyDir:_copyDir, //文件夹复制 async
+    transToArray:_transToArrayFromObjArr //文件夹复制 async
 };

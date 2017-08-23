@@ -7,7 +7,7 @@ var dbConnection = require("./db-connect");
 
 var addSql_componentMenuNav = "insert into ued_component_menu_nav(menuId,name,label,level,parent) values(?,?,?,?,?)";
 var truncateMenuNav ="truncate table ued_component_menu_nav";
-var datas = transToArrayFromObj(componentFiles);
+var datas = transToArrayFromObjArr(componentFiles);
 
 insertData(datas);
 
@@ -28,9 +28,9 @@ function insertData(datas){
     dbConnection.end();
 }
 
-function transToArrayFromObj(obj){
+function transToArrayFromObjArr(objArr){
     var arr=[];
-    componentFiles.forEach(function(rowItem,index){
+    objArr.forEach(function(rowItem,index){
         arr[index]=[];
         for(key in rowItem){
             arr[index].push(rowItem[key]);

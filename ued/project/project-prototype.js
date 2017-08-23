@@ -51,17 +51,6 @@ travel(uedProjectPath,function(file){
         }
     }
 });
-/*
-travel(uedProjectPath,function(file){
-    var fileObj = path.parse(file);
-    for(project in fileTree){
-        if(fileTree.hasOwnProperty(project)) {
-            if (fileObj.dir.indexOf(project) != -1) {
-                console.log(project);
-            }
-        }
-    }
-});*/
 
 console.log(fileTree);
 
