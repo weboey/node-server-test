@@ -214,6 +214,17 @@ function _copyDir(from, to, cb) {
         }
     ], cb);
 }
+/**
+ *功能：执行命令行bat
+ * */
+function execBat(batPath,file,log){
+    child_process.execFile(batPath,[file,log],{cwd:'f:/'},function (error,stdout,stderr) {
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+        else console.log('成功执行指令!');
+    });
+}
 
 module.exports = {
     travel:_travel, //目录遍历

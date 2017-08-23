@@ -24,8 +24,9 @@ simpleGit.log({file:"ued-resource/项目/[日本-日本软银]公参管理","--p
     log.all.forEach(function(commitRecord,index){
         //console.log(formatStrDate(commitRecord.date))
         if(index==log.total-1){
-            project.creator = commitRecord.author_name;
-            project.id = commitRecord.hash;
+            project.creator = getCreatorName(commitRecord.author_name);
+            project.creatorId = getCreatorId(commitRecord.author_name);
+            project.id = commitRecord.hash.slice(0,5);
             project.history.push({date:formatStrDate(commitRecord.date),message:commitRecord.message});
             project.creatTime=formatStrDate(commitRecord.date);
         }else{
@@ -36,6 +37,7 @@ simpleGit.log({file:"ued-resource/项目/[日本-日本软银]公参管理","--p
     //var re1 = /(\d{1,3})+(?:\.\d+)?/g
     //var re2 = /[\u4e00-\u9fa5]{2,}/g
 });
+
 
 
 
@@ -57,18 +59,18 @@ utils.travel(projectPath,function(file){
 
 
 
-//执行命令行bat
-function execBat(url,file,log){
-    child_process.execFile(url,[file,log],{cwd:'f:/'},function (error,stdout,stderr) {
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
-        else console.log('成功执行指令!');
-    });
-}
+
 
 function formatStrDate(str){
     var result = str.split(" ");
     result.pop();
     return result.join(" ");
+}
+
+function getCreatorName(str){
+    return str.match(/[\u4e00-\u9fa5]{2,}/g)
+}
+
+function getCreatorId(str){
+    return str.match(/(\d{1,3})+(?:\.\d+)?/g)
 }
