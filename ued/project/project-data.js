@@ -5,20 +5,17 @@
 var fs = require('fs');
 var path = require('path');
 
-var gitLogOfProjects = require("./project-git-log");  //git log 数据
-var prototypeOfProjects = require("./project-git-log");  //项目原型数据
+var gitLogOfProjects = require("./project-git-log").getGitLog;  //git log 数据
+var prototypeOfProjects = require("./project-prototype").projectProtoData;  //项目原型数据
 
-
-var tb_projectsData = [];
-
-var tbProjectHistoryData = [];
-
-function getProjectsData(){
+function _getProjectsData(){
+    var tb_projectsData = [];
+    var tb_projectHistoryData = [];
+    var tb_projectImages = [];
     var projectsData = [];
     gitLogOfProjects.forEach(function(projectLog){
         prototypeOfProjects.forEach(function(projectPrototype){
             if(projectPrototype.projectName == projectLog.projectName){
-
                 projectsData.push(Object.assign(projectLog,projectPrototype));
             }
         })
@@ -28,15 +25,36 @@ function getProjectsData(){
         project.history.forEach(function(history){
             var projectHistory={};
             projectHistory.projectId=project.projectId;
-            tb_projectsData.push(Object.assign(projectHistory,history))
+            tb_projectHistoryData.push(Object.assign(projectHistory,history));
+        });
+        project.prototypeImgUrlList.forEach(function(images){
+            var projectImages={};
+            projectImages.projectId=project.projectId;
+            projectImages.prototypeImgUrl=images;
+            projectImages.imgType=1;
+            tb_projectImages.push(projectImages);
         })
+        tb_projectsData.push(shallCopy(project));
     });
 
-    return projectsData;
-
-    //tb_projectsData.push(projectLog.history);
-
+    return {
+        tb_projectsData:tb_projectsData,
+        tb_projectHistoryData:tb_projectHistoryData,
+        tb_projectImages:tb_projectImages
+    }
 }
+function shallCopy(n){
+    var o={};
+    for (var p in n){
+        if(n.hasOwnProperty(p) && (!o.hasOwnProperty(p) )){
+            if(p!=="history" && p!=="prototypeImgUrlList")
+            o[p]=n[p];
+        }
+    }
+    return o
+};
 
-
+module.exports = {
+    getProjectsData:_getProjectsData
+};
 

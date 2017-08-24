@@ -3,23 +3,21 @@
  */
 var fs = require('fs');
 var path = require('path');
-var uedProjectPath = "F:/git/ued-resource/项目";
-var uedPath = "F:/git";
+
 var serverPath = "http://localhost:8080/ux";
+const uedResource = 'f:/git/ux';  //导出目标文件路径
+const projectPath = 'f:/git/ux/ued-resource/项目';  //导出目标文件路径
 
-function Project(){
-
-};
 const projectFiled={
     prototypeImgUrl:"头图",
     prototypeBrief:"项目简介",
     prototypeView:"原型",
     prototypeImgUrlList:"效果图"
 };
-var projectList=[];
+
 var fileTree = {};
 
-travel(uedProjectPath,function(file){
+travel(projectPath,function(file){
     var fileObj = path.parse(file);
     var projectName= fileObj.name;
     if(!fileTree[projectName]){
@@ -29,8 +27,7 @@ travel(uedProjectPath,function(file){
     }
 },false);
 
-travel(uedProjectPath,function(file){
-
+travel(projectPath,function(file){
     //console.log(path.relative(uedPath, file));
     var fileObj = path.parse(file);
     //var dirs = fileObj.dir.split(path.sep); //path.sep 平台特定的路径片段分隔符
@@ -40,10 +37,11 @@ travel(uedProjectPath,function(file){
                 fileTree[project].projectName=project;
                 for(filed in projectFiled){
                     if(fileObj.dir.indexOf(projectFiled[filed])!=-1 || fileObj.name.indexOf(projectFiled[filed])!=-1){
+                        var fileUrl = path.join(serverPath,path.relative(uedResource,file));
                         if(filed=="prototypeImgUrlList"){
-                            fileTree[project]["prototypeImgUrlList"].push(file);
+                            fileTree[project]["prototypeImgUrlList"].push(fileUrl);
                         }else{
-                            fileTree[project][filed]=file;
+                            fileTree[project][filed]=fileUrl;
                         }
                     }
                 }
@@ -51,9 +49,6 @@ travel(uedProjectPath,function(file){
         }
     }
 });
-
-console.log(fileTree);
-
 
 function travel(dir,callback,dep) {
     dep = dep==null?true:dep; //默认深度遍历到所有子文件
@@ -71,7 +66,12 @@ function travel(dir,callback,dep) {
     });
 }
 
+var result =[];
+for(p in fileTree){
+    result.push(fileTree[p]);
+}
 
+exports.projectProtoData = result;
 
 
 
