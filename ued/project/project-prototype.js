@@ -4,7 +4,7 @@
 var fs = require('fs');
 var path = require('path');
 
-var serverPath = "http://localhost:8080/ux";
+var serverPath = "localhost:8080/ux";
 const uedResource = 'f:/git/ux';  //导出目标文件路径
 const projectPath = 'f:/git/ux/ued-resource/项目';  //导出目标文件路径
 
@@ -37,7 +37,9 @@ travel(projectPath,function(file){
                 fileTree[project].projectName=project;
                 for(filed in projectFiled){
                     if(fileObj.dir.indexOf(projectFiled[filed])!=-1 || fileObj.name.indexOf(projectFiled[filed])!=-1){
-                        var fileUrl = path.join(serverPath,path.relative(uedResource,file));
+                       // console.log(path.join(serverPath,path.relative(uedResource,file)).replace(/\\/g,'/'));
+                        var fileUrl = "http://"+path.join(serverPath,path.relative(uedResource,file)).replace(/\\/g,'/');
+                        console.log(fileUrl);
                         if(filed=="prototypeImgUrlList"){
                             fileTree[project]["prototypeImgUrlList"].push(fileUrl);
                         }else{
@@ -58,7 +60,12 @@ function travel(dir,callback,dep) {
             if(file.indexOf("原型")==-1){ //原型目录中的文件太多了，不需要遍历，特殊处理
                 travel(pathname, callback);
             }else{
-                callback(path.join(pathname, 'index.html'));
+                try {
+                    fs.accessSync(path.join(pathname, 'home.html')); //如果存在home.html，原型就用home.html
+                    callback(path.join(pathname, 'home.html'));
+                }catch(err){
+                    callback(path.join(pathname, 'index.html'));
+                }
             }
         }else{
             callback(pathname);
@@ -67,6 +74,7 @@ function travel(dir,callback,dep) {
 }
 
 var result =[];
+
 for(p in fileTree){
     result.push(fileTree[p]);
 }

@@ -25,7 +25,7 @@ function _getProjectsData(){
         project.history.forEach(function(history){
             var projectHistory={};
             projectHistory.projectId=project.projectId;
-            tb_projectHistoryData.push(Object.assign(projectHistory,history));
+            tb_projectHistoryData.push(Object.assign(history,projectHistory));
         });
         project.prototypeImgUrlList.forEach(function(images){
             var projectImages={};

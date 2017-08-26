@@ -7,6 +7,6 @@ var connection = mysql.createConnection({
     stringifyObjects:true
 });
 
-connection.connect();
+
 
 module.exports = connection;

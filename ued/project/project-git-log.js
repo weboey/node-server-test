@@ -32,16 +32,29 @@ function travalAndExportGitLog(callback){
                 };
                 //,"--date":'short' git log --pretty=format:"%h,%an,%ad,%s" --date=format:'%Y-%m-%d %H:%M:%S' -- "%1" > f:/gitlog/"%2"
                 simpleGit.log({file:logFile,"--pretty":'format:"%h,%an,%ad,%s"'},  function(err, log) {
+                    //console.log(log);
                     log.all.forEach(function(commitRecord,index){
                         if(index==log.total-1){
                             project.projectId = commitRecord.hash.slice(0,6);
                             project.projectName=path.parse(logFile).name;
                             project.creator = _getCreatorName(commitRecord.author_name);
                             project.creatorId = _getCreatorId(commitRecord.author_name);
-                            project.history.push({date:_formatStrDate(commitRecord.date),message:commitRecord.message});
+                            project.history.push({
+                                messageId:commitRecord.hash.slice(0,6),
+                                updator:_getCreatorName(commitRecord.author_name),
+                                updaterId:_getCreatorId(commitRecord.author_name),
+                                date:_formatStrDate(commitRecord.date),
+                                message:commitRecord.message.replace(/\(HEAD.*\)/g,"").trim()
+                            });
                             project.creatTime=_formatStrDate(commitRecord.date);
                         }else{
-                            project.history.push({date:_formatStrDate(commitRecord.date),message:commitRecord.message});
+                            project.history.push({
+                                messageId:commitRecord.hash.slice(0,6),
+                                updator:_getCreatorName(commitRecord.author_name),
+                                updaterId:_getCreatorId(commitRecord.author_name),
+                                date:_formatStrDate(commitRecord.date),
+                                message:commitRecord.message.replace(/\(HEAD.*\)/g,"").trim()
+                            });
                         }
                     });
                     cb(null, project)
@@ -56,9 +69,11 @@ function travalAndExportGitLog(callback){
 
 var readLog = function(filename){
     var defer=Q.defer();
+
     travalAndExportGitLog(function (err,result) {
         if(err) defer.reject(err);
         else {
+            console.log(result);
             gitLogOfProjects.push(result);
             defer.resolve(result);
         }
