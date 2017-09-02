@@ -247,10 +247,35 @@ function _transToArrayFromObjArr(objArr){
     });
     return arr;
 }
+/**
+ *功能：生成count位随机ID
+ * */
+function _generateID(count){
+    var d = new Date().getTime();
+    var str = "x".repeat(count || 16);
+    return str.replace(/[xy]/g,function(c){
+        const r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c==="x" ? r : (r&0x7|0x8)).toString(16);
+    });
+}
+/**
+ *功能：判断文件是否存在
+ * */
+function _fsExistsSync(path) {
+    try{
+        fs.accessSync(path,fs.F_OK);
+    }catch(e){
+        return false;
+    }
+    return true;
+}
 module.exports = {
     travel:_travel, //目录遍历
     copy:_copy, //文件复制
     copyFile:_copyFile, //文件复制 async
     copyDir:_copyDir, //文件夹复制 async
-    transToArray:_transToArrayFromObjArr //文件夹复制 async
+    transToArray:_transToArrayFromObjArr, //文件夹复制 async
+    generateId:_generateID,
+    fsExistsSync:_fsExistsSync
 };

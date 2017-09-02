@@ -13,6 +13,7 @@ function _getProjectsData(){
     var tb_projectHistoryData = [];
     var tb_projectImages = [];
     var projectsData = [];
+
     gitLogOfProjects.forEach(function(projectLog){
         prototypeOfProjects.forEach(function(projectPrototype){
             if(projectPrototype.projectName == projectLog.projectName){

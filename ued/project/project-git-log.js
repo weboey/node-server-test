@@ -28,28 +28,29 @@ function travalAndExportGitLog(callback){
             function(logFile,cb){
                 //"ued-resource/项目/[日本-日本软银]公参管理"
                 var project ={
+                    projectName:path.parse(logFile).name,
                     history:[]
                 };
                 //,"--date":'short' git log --pretty=format:"%h,%an,%ad,%s" --date=format:'%Y-%m-%d %H:%M:%S' -- "%1" > f:/gitlog/"%2"
                 simpleGit.log({file:logFile,"--pretty":'format:"%h,%an,%ad,%s"'},  function(err, log) {
-                    //console.log(log);
                     log.all.forEach(function(commitRecord,index){
+                        //创建人信息
                         if(index==log.total-1){
-                            project.projectId = commitRecord.hash.slice(0,6);
-                            project.projectName=path.parse(logFile).name;
                             project.creator = _getCreatorName(commitRecord.author_name);
                             project.creatorId = _getCreatorId(commitRecord.author_name);
                             project.history.push({
-                                messageId:commitRecord.hash.slice(0,6),
+                                messageId:utils.generateId(),
                                 updator:_getCreatorName(commitRecord.author_name),
                                 updaterId:_getCreatorId(commitRecord.author_name),
                                 date:_formatStrDate(commitRecord.date),
                                 message:commitRecord.message.replace(/\(HEAD.*\)/g,"").trim()
                             });
                             project.creatTime=_formatStrDate(commitRecord.date);
-                        }else{
+                        }
+                        //历史记录
+                        else{
                             project.history.push({
-                                messageId:commitRecord.hash.slice(0,6),
+                                messageId:utils.generateId(),
                                 updator:_getCreatorName(commitRecord.author_name),
                                 updaterId:_getCreatorId(commitRecord.author_name),
                                 date:_formatStrDate(commitRecord.date),
@@ -57,6 +58,10 @@ function travalAndExportGitLog(callback){
                             });
                         }
                     });
+                    //最后更新人信息
+                    project.updator = _getCreatorName(log.latest.author_name);
+                    project.updatorId = _getCreatorId(log.latest.author_name);
+                    project.updateTime = _formatStrDate(log.latest.date);
                     cb(null, project)
                 })
             },
@@ -73,7 +78,6 @@ var readLog = function(filename){
     travalAndExportGitLog(function (err,result) {
         if(err) defer.reject(err);
         else {
-            console.log(result);
             gitLogOfProjects.push(result);
             defer.resolve(result);
         }
