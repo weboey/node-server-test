@@ -196,7 +196,7 @@ function _copyDir(from, to, cb) {
         function (stats, callback) {
             if (stats.isFile()) {
                 // one file copy
-                copyFile(from, to, function (err) {
+                _copyFile(from, to, function (err) {
                     if (err) {
                         callback(true);
                     } else {
@@ -209,7 +209,7 @@ function _copyDir(from, to, cb) {
         },
         function (files, callback) {
             async.mapLimit(files, 10, function (f, cb) {
-                copyFile(f.file, f.dir, cb);
+                _copyFile(f.file, f.dir, cb);
             }, callback);
         }
     ], cb);
