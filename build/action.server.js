@@ -4,8 +4,18 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var ws_1 = require('ws');
-//var bodyParser = require('body-parser');
+var multer  = require('multer');
+var fs = require("fs");
+var path = require("path");
+var upload = multer();
 var app = express();
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+//app.use(express.bodyParser({uploadDir:'./tmp'}));
+//app.use(busboy());
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: true }));
+
 var Product = (function () {
     function Product(id, title, price, reting, desc, categories) {
         this.id = id;
@@ -49,8 +59,9 @@ app.get("/api/products", function (req, res) {
     //}
     res.json(result);
 });
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
 app.post('/api/products', function (req, res) {
     console.log(req.query);
     console.log(req.body);
@@ -61,6 +72,42 @@ app.get("/api/product/:id", function (req, res) {
     res.json(products.find(function (product) { return product.id == req.params.id; }));
     //res.json(products.filter( (product) => product.id == req.params.id) )
 });
+
+app.post("/api/imgUpload", multipartMiddleware, function (req, res) {
+    //文件
+    console.log(req.files);
+    const photoData = req.files.uploadPhoto[0];
+    //文件路径
+    const filePath = photoData.path;
+    //读取文件
+    fs.readFile(filePath, function (err, data) {
+        //取时间戳用来命名
+        const timestamp = Date.now();
+        //取文件类型用来命名
+        var type = photoData.type.split('/')[1];
+        type=type==="plain"?type="txt":type;
+        //命名文件
+        const photo = timestamp + '.' + type;
+        //存储路径
+        const newPath = path.join(__dirname, '../', 'upload/demo/' + photo);
+       // const newPath = path.join('E:/git/angular2-project/src/upload/images/' + photo);
+        //写入文件
+        console.log(newPath);
+        console.log(type);
+        fs.writeFile(newPath, data, function (err) {
+            //返回状态1表示成功，返回的数据是存储后的文件名
+            const reply = {
+                status: 1,
+                data: {
+                    name: photo
+                }
+            };
+            res.end(JSON.stringify(reply));
+        })
+    });
+});
+
+
 var server = app.listen("8000", "localhost", function () {
     console.log("服务器已启动> http://localhost!");
 });
