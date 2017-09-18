@@ -18,7 +18,7 @@ var add_tb_ued_project_history = "insert into ued_project_history("+ filedsOfhis
 var del_tb_ued_project_history = "delete from ued_project_history  where messageId=?";
 
 var add_tb_xplan_prototype_images = "insert into xplan_prototype_images("+ filedsOfImages + ") values(?,?,?)";
-var del_tb_xplan_prototype_images = "delete from ued_project_history  where SerialNum=?";
+var del_tb_xplan_prototype_images = "delete from xplan_prototype_images  where PrototypeImgUrl=?";
 
 
 setTimeout(function(){
@@ -26,12 +26,12 @@ setTimeout(function(){
     var tb_projectsData = utils.transToArray(projectData.tb_projectsData);
     var tb_projectHistoryData = utils.transToArray(projectData.tb_projectHistoryData);
     var tb_projectImages = utils.transToArray(projectData.tb_projectImages);
-    console.log(tb_projectsData);
-    //dbConnection.connect();
-     // insertDataToTbProject(tb_projectsData,add_tb_xplan_project_info,del_tb_xplan_project_info,7);
-     // insertDataToTbProject(tb_projectHistoryData,add_tb_ued_project_history,del_tb_ued_project_history);
-    //  insertDataToTbProject(tb_projectImages,add_tb_xplan_prototype_images,null);
-    //dbConnection.end();
+    console.log(tb_projectImages);
+    dbConnection.connect();
+      insertDataToTbProject(tb_projectsData,add_tb_xplan_project_info,del_tb_xplan_project_info,7);
+      insertDataToTbProject(tb_projectHistoryData,add_tb_ued_project_history,del_tb_ued_project_history);
+      insertDataToTbProject(tb_projectImages,add_tb_xplan_prototype_images,del_tb_xplan_prototype_images,1);
+    dbConnection.end();
 },10000);
 
 function execSql(fn){

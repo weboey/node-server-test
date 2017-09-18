@@ -270,6 +270,20 @@ function _fsExistsSync(path) {
     }
     return true;
 }
+
+
+//去掉字符串中任意参数str
+String.prototype.trim2 = function(str){
+    var reg=new RegExp(str,"g");
+    return this.replace(reg,"")
+};
+function _getTagValue(file,index){
+    var arr=file.split("\[");
+    if(!arr[index]) arr[index]="";
+    return arr[index] && arr[index].trim2("\]");
+}
+
+
 module.exports = {
     travel:_travel, //目录遍历
     copy:_copy, //文件复制
@@ -277,5 +291,6 @@ module.exports = {
     copyDir:_copyDir, //文件夹复制 async
     transToArray:_transToArrayFromObjArr, //文件夹复制 async
     generateId:_generateID,
-    fsExistsSync:_fsExistsSync
+    fsExistsSync:_fsExistsSync,
+    getTagValue:_getTagValue
 };

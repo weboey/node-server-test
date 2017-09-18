@@ -4,8 +4,8 @@
 
 var fs = require("fs");
 var path = require('path');
-
-var uedPath = "F:/git/ued-resource/组件";
+var utils = require("./service/utils.js");
+var uedPath = "F:/git/ux/ued-resource/组件";
 
 var fileTree = {};
 
@@ -38,21 +38,21 @@ travel(uedPath,function(file){
 
 //path.dirname(path) 返回一个 path 的目录名
 //path.extname(path) 返回 path 的扩展名
-
+var j=Object.getOwnPropertyNames(fileTree).length;
 var result = parseFileTree(fileTree);
 
 function parseFileTree(fileTree){
     var result=[];
     var item;var k=0;
-    var j=Object.getOwnPropertyNames(fileTree).length;
     for(key in fileTree){
         k++;
         item=[];
         item.id=k;
         item.name="";
-        item.label=key;
+        item.label=utils.getTagValue(key,0);
         item.level=1;
         item.parent=0;
+        item.order = utils.getTagValue(key,1);
         result.push(item);
         if(fileTree[key].length>0){
             fileTree[key].forEach(function(file){
@@ -65,17 +65,19 @@ function parseFileTree(fileTree){
                     item.name="";
                     item.label = file;
                 }else{
-                    item.name=file.match(/^.*\[(.*)\]/)[1];
-                    item.label=file.match(/^.*(?=\[)/)[0];
+                    item.name=utils.getTagValue(file,1);//file.match(/\[(.*)\]/)[1];
+                    item.label=utils.getTagValue(file,0);//file.match(/^.*(?=\[)/)[0];
                 }
                 item.level=2;
                 item.parent=k;
+                item.order = utils.getTagValue(file,2);
                 result.push(item);
             })
         }
     }
     return result;
 }
+
 
 module.exports = result;
 
