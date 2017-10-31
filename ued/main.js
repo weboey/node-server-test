@@ -8,7 +8,7 @@ var dbConnection = require("./db-connect");
 var fs = require("fs");
 var path = require('path');
 var utils = require("./service/utils.js");
-var jigsawMenuFilePath = "E:/git/jigsaw/documentation";
+var jigsawMenuFilePath = "E:/git/gerrit/jigsaw/documentation";
 
 
 var addSql_componentMenuNav = "insert into ued_component_menu_nav(menuId,name,label,level,parent,orderByNum) values(?,?,?,?,?,?)";
